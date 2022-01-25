@@ -7,11 +7,6 @@ Solve the following problems.
 
 See https://py4phy.github.io/PHY432/modules/python/modules_packages/ for help.
 
-(*Note that the last activity on class inheritance is optional* — you
-don't need the final 10 points to get 100% on this activity even
-though GitHub autograding will still show the tests as failing. Don't
-worry about that: if you have 47 points you have 100%)
-
 ## constants module
 
 1. Create a module `constants.py` with values for the mathematical

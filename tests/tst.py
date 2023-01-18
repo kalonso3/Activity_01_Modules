@@ -2,10 +2,13 @@
 import pytest
 import importlib
 import pathlib
+import os
 import sys
 from io import StringIO
 import subprocess
 import re
+import base64
+import zlib
 
 import numpy as np
 import numpy.testing as nptst
@@ -79,6 +82,27 @@ def _test_file(p):
     p = pathlib.Path(p)
     if not p.exists():
         raise AssertionError(f"Solution file '{p}' is missing.")
+
+def _test_fileregex(pattern, directory=os.curdir):
+    """Regular expression filename matching.
+
+    Test all files in directory (relative to the top dir of the
+    repository) and succeed if one filename matches.
+
+    If the pattern contains a path then files are looked for in the
+    deepest directory in the path. the pattern can *only* contain
+    regular expression for the file name and NOT the parent directory
+    names.
+
+    pattern: regular expression
+
+    """
+    # Needs to be tested on Windows, esp. p_pattern.parent might fail with '\'
+    p_pattern = pathlib.PurePath(pattern)
+    parent = pathlib.Path(directory) / p_pattern.parent
+    filepattern = p_pattern.name
+    matches = [bool(re.match(filepattern, p.name)) for p in parent.iterdir() if p.is_file()]
+    assert any(matches), f"No files matching pattern '{filepattern}' present in directory '{parent}'"
 
 def _test_imagefile(p):
     p = pathlib.Path(p)
@@ -157,3 +181,11 @@ def _test_filecontent(filename, reference, regex=True):
         m = reference in output
         match_pattern = "contain text"
     assert m, f"'In file {filename}': output\n\n{output}\n\ndid not {match_pattern}\n\n{reference}\n\n"
+
+
+def dzb64b16(s):
+    """Decode obfuscated code in bytes s.
+
+    Run with exec(dzb64b16(s))
+    """
+    return zlib.decompress(base64.b16decode(s))

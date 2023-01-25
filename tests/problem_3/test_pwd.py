@@ -16,7 +16,7 @@ def test_python3():
 
 def test_pwd():
     return _test_output(FILENAME,
-                        r"""cwd = '/.*/[Aa]ctivity.*'""",
+                        r"""cwd = '[/\\].*[/\\][Aa]ctivity.*'""",
                         input_values=None,
                         regex=True)
 
